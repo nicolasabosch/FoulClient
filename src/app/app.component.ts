@@ -1,6 +1,6 @@
 
 import { Component, OnInit, Input } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
@@ -14,14 +14,21 @@ export class AppComponent {
 
   private socket: WebSocket;
   private connection: Observable<any>;
-
-  
+  public algo: any;
+  public ver:string="";
   private speechSynthesis = window.speechSynthesis;
   public  record:any;
+  public  recordList:any[];
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
 
-    this.record={
+    this.http.get<any>('http://admin.foul.com.ar/api/Match').subscribe(data => {
+      this.recordList = data;
+  })
+
+    this.algo={
       "MatchID": 3,
       "MatchDate": "2023-11-04T00:00:00",
       "ZoneID": 1,
@@ -180,18 +187,22 @@ export class AppComponent {
 
 
 
+
+
     this.socket = new WebSocket('ws://172.174.204.46:8000');
     this.connection = this.connect()
     this.connection.subscribe(
       (message) => {
+        alert("msg");
         var msjJSON =  JSON.parse(message.replace(/'/g, '"'));
         this.record= msjJSON;
         if (this.record.text)
         {
-         
+          
           var msg = new SpeechSynthesisUtterance();
           msg.text =this.record.text;
           speechSynthesis.speak(msg);
+          
         }
       },
       (error) => {
@@ -207,8 +218,11 @@ export class AppComponent {
     return new Observable(observer => {
       this.socket.onmessage = (event) => 
       {
+        if (!this.record)
+        this.record = {};
 
         var msjJSON =  JSON.parse(event.data.replace(/'/g, '"'));
+        console.log(msjJSON);
          if (msjJSON.MatchID)
          {
               this.record= msjJSON;
@@ -225,7 +239,10 @@ export class AppComponent {
           
           var msg = new SpeechSynthesisUtterance();
           msg.text =this.record.text;
+          speechSynthesis.cancel();
           speechSynthesis.speak(msg);
+          msg.text ="";
+          
         }
         
         }
@@ -236,7 +253,7 @@ export class AppComponent {
   }
 
   public sendMessage(message: string): void {
-    this.socket.send(message);
+    //this.socket.send(message);
   }
 
 }
