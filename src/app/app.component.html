@@ -1,13 +1,13 @@
 <div class="row">
-  <div class="col-sm-4 form-group" style="text-align: center;">
+  <div class="col-4 form-group" style="text-align: center;">
     <button class="btn btn-warning" (click)="ver='Partido'" style="margin-top:30px;">Partido en Vivo</button>
   </div>
   <div class="col-4" style="text-align: center;">
 
-    <img src="assets/foul.png" style="width:150px" />
+    <img src="assets/foul.png" style="width:130px" />
   </div>
-  <div class="col-sm-4 form-group" style="text-align: center;">
-    <button class="btn btn-warning" (click)="ver='Posiciones'" style="margin-top:30px;">Fixture</button>
+  <div class="col-4 form-group" style="text-align: center;">
+    <button class="btn btn-warning" (click)="ver='Posiciones'" style="margin-top:30px;">Fixture Partidos</button>
   </div>
 
 
@@ -87,25 +87,33 @@
     </div>
   </div>
 </div>
-<div style="margin-left: 20px;margin-right: 20px;">
+<div class="container">
   <div *ngIf="ver=='Posiciones'">
     <table class="table table-condensed table-bordered table-sm table-hover">
       <thead>
         <th>Fecha</th>
-        <th>Zona</th>
-        <th>Estado</th>
+        
+        
         <th>Local</th>
         <th>Visitante</th>
-        <th>Árbitro</th>
+        
       </thead>
       <tbody>
         <tr *ngFor="let r of recordList">
-          <td>{{r.MatchDate | date:'dd/MM/yyyy' }}</td>
-          <td>{{r.ZoneName}}</td>
-          <td>{{r.MatchStatusName}}</td>
-          <td>{{r.HomeTeamName}} ({{r.HomeGoals}}) </td>
-          <td>{{r.AwayTeamName}} ({{r.AwayGoals}})</td>
-          <td>{{r.UserName}}</td>
+          <td>{{r.MatchDate | date:'dd/MM/yyyy' }}<br>
+            {{r.MatchStatusName}}
+          </td>
+          
+          
+          <td>
+            <img *ngIf="r && r?.localFileID" src="http://admin.foul.com.ar/api/file/{{r?.localFileID}}"
+        style="height: 50px;" /><br/>
+            {{r.HomeTeamName}} ({{r.HomeGoals}}) </td>
+          <td>
+            <img *ngIf="r && r?.awayFileID" src="http://admin.foul.com.ar/api/file/{{r?.awayFileID}}"
+        style="height: 50px;" /><br/>
+            {{r.AwayTeamName}} ({{r.AwayGoals}})</td>
+      
 
         </tr>
       </tbody>

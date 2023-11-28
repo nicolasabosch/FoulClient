@@ -222,7 +222,7 @@ export class AppComponent {
         this.record = {};
 
         var msjJSON =  JSON.parse(event.data.replace(/'/g, '"'));
-        console.log(msjJSON);
+        
          if (msjJSON.MatchID)
          {
               this.record= msjJSON;
